@@ -43,7 +43,7 @@ public class FormatMojo extends AbstractMojo {
     /**
      * Target containing the specific files, folders or patterns to lint
      */
-    @Parameter(property = "format.targets")
+    @Parameter(property = "format.targets", defaultValue = "${project.basedir}")
     private String targets;
 
     public void execute() throws MojoExecutionException {
