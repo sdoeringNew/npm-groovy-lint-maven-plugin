@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <node.version>v22.10.0</node.version>
         <npm-groovy-lint.version>15.0.2</npm-groovy-lint.version>
@@ -17,5 +17,6 @@
 
     <modules>
         <module>package-npm-groovy-lint</module>
+        <module>npm-groovy-lint-plugin</module>
     </modules>
 </project>
