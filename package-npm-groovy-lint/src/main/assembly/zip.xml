@@ -9,6 +9,13 @@
     <fileSets>
         <fileSet>
             <directory>${project.basedir}/node_modules</directory>
+            <excludes>
+                <!--
+                    The .bin/ folder contains symlinks to executables which will be corrupted by zipping them.
+                    Exclude the folder and let npm recreate it when the package is installed during the plugin-call.
+                 -->
+                <exclude>.bin/</exclude>
+            </excludes>
         </fileSet>
     </fileSets>
     <files>

@@ -13,7 +13,9 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
@@ -46,38 +48,41 @@ public class FormatMojo extends AbstractMojo {
     @Parameter(property = "format.targets", defaultValue = "${project.basedir}")
     private String targets;
 
+    private void executeFrontendMavenPlugin(final MojoExecutor.ExecutionEnvironment environment, final String installDirectory, final String goal,
+                                            final MojoExecutor.Element... arguments) throws MojoExecutionException {
+        final MojoExecutor.Element[] elements = Stream.of(
+                        Stream.of(element("installDirectory", installDirectory)),
+                        Arrays.stream(arguments))
+                .flatMap(s -> s)
+                .toArray(MojoExecutor.Element[]::new);
+        MojoExecutor.executeMojo(plugin("com.github.eirslett", "frontend-maven-plugin", "1.15.1"), goal,
+                configuration(elements), environment);
+    }
+
     public void execute() throws MojoExecutionException {
         getLog().debug("failOn: " + failOn);
         getLog().debug("fix: " + fix);
         getLog().debug("targets: " + targets);
 
         try {
+            final MojoExecutor.ExecutionEnvironment environment = MojoExecutor.executionEnvironment(project, session, pluginManager);
             final String installDirectory = Files.createTempDirectory("npm-groovy-lint").toAbsolutePath().toString();
 
             // install Node.js
-            final MojoExecutor.ExecutionEnvironment environment = MojoExecutor.executionEnvironment(project, session, pluginManager);
-            MojoExecutor.executeMojo(plugin("com.github.eirslett", "frontend-maven-plugin", "1.15.1"), "install-node-and-npm",
-                    configuration(
-                            element("nodeVersion", "v22.10.0"),
-                            element("installDirectory", installDirectory)),
-                    environment);
+            executeFrontendMavenPlugin(environment, installDirectory, "install-node-and-npm",
+                    element("nodeVersion", "v22.10.0"));
 
             // unzip pre-packaged npm-groovy-lint module
-            Utils.unzipZippedFileFromResource(getLog(), Objects.requireNonNull(getClass().getResourceAsStream("/packaged-npm-groovy-lint.zip")), installDirectory);
+            Utils.unzipZippedFileFromResource(getLog(), installDirectory,
+                    Objects.requireNonNull(getClass().getResourceAsStream("/packaged-npm-groovy-lint.zip")));
 
             // install pre-packaged npm-groovy-lint module
-            MojoExecutor.executeMojo(plugin("com.github.eirslett", "frontend-maven-plugin", "1.15.1"), "npm",
-                    configuration(
-                            element("arguments", "install npm-groovy-lint --prefer-offline"),
-                            element("installDirectory", installDirectory)),
-                    environment);
+            executeFrontendMavenPlugin(environment, installDirectory, "npm",
+                    element("arguments", "install --prefer-offline npm-groovy-lint"), element("workingDirectory", installDirectory));
 
             // run npm-groovy-lint
-            MojoExecutor.executeMojo(plugin("com.github.eirslett", "frontend-maven-plugin", "1.15.1"), "npx",
-                    configuration(
-                            element("arguments", "npm-groovy-lint --failon " + failOn + (fix ? " --fix " : " ") + targets),
-                            element("installDirectory", installDirectory)),
-                    environment);
+            executeFrontendMavenPlugin(environment, installDirectory, "npx",
+                    element("arguments", "npm-groovy-lint --failon " + failOn + (fix ? " --fix " : " ") + targets));
         } catch (final IOException e) {
             throw new MojoExecutionException(e);
         }

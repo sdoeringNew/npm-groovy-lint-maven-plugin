@@ -12,7 +12,7 @@ import java.util.zip.ZipInputStream;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 class Utils {
-    public static void unzipZippedFileFromResource(final Log log, final InputStream inputStream, final String outputDir) throws IOException {
+    public static void unzipZippedFileFromResource(final Log log, final String outputDir, final InputStream inputStream) throws IOException {
         final long now = System.nanoTime();
         final Path outputPath = Path.of(outputDir);
         try (ZipInputStream zipStream = new ZipInputStream(inputStream)) {

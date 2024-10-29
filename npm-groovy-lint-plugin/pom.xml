@@ -29,6 +29,30 @@
                     <goalPrefix>npm-groovy-lint</goalPrefix>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>install</goal>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <skipInvocation>${maven.test.skip}</skipInvocation>
+                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                            <failIfNoProjects>true</failIfNoProjects>
+                            <settingsFile>src/it/settings.xml</settingsFile>
+                            <scriptVariables>
+                                <projectversion>${project.version}</projectversion>
+                            </scriptVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
