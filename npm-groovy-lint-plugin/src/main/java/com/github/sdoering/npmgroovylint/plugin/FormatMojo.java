@@ -1,4 +1,4 @@
-package com.github.mschieder.idea.formatter;
+package com.github.sdoering.npmgroovylint.plugin;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
