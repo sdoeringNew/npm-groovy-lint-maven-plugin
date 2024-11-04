@@ -21,7 +21,7 @@ Format all Groovy files recursively in ``${project.basedir}``, but fail if there
     <executions>
         <execution>
             <goals>
-                <goal>format</goal>
+                <goal>apply</goal>
             </goals>
         </execution>
     </executions>
@@ -47,7 +47,7 @@ Format all .groovy files recursively once in ``src/test/groovy``, automatically 
         <execution>
             <phase>validate</phase>
             <goals>
-                <goal>format</goal>
+                <goal>apply</goal>
             </goals>
         </execution>
     </executions>
@@ -59,7 +59,7 @@ Format all .groovy files recursively once in ``src/test/groovy``, automatically 
 Call format for the current and all inherited submodules.
 
 ```bash
-mvn com.github.sdoering:npm-groovy-lint-plugin:format
+mvn com.github.sdoering:npm-groovy-lint-plugin:apply
 ```
 
 Use the ``-pl :___INSERT_MODULE_NAME___`` option to format a specific module.

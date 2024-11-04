@@ -21,8 +21,8 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 
-@Mojo(name = "format", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
-public class FormatMojo extends AbstractMojo {
+@Mojo(name = "apply", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+public class ApplyMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject project;
     @Parameter(defaultValue = "${session}", readonly = true)
